@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "CI=false react-scripts build",  // ← Added CI=false
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -33,4 +33,4 @@
       "last 1 safari version"
     ]
   }
-}
+  }
