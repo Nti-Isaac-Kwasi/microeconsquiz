@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Clock, CheckCircle, XCircle, BarChart2, Award, Pause, SkipForward, RefreshCw, ChevronRight } from 'lucide-react';
-
+import { Play, Clock, CheckCircle, XCircle, BarChart2, Award, Pause, RefreshCw, ChevronRight } from 'lucide-react';
 /**
  * DATA: 60 Questions based on the provided Microeconomics PDF.
  */
@@ -558,18 +557,17 @@ export default function UniversityQuizApp() {
   }, [screen, isPaused, isBreakActive]);
 
   // --- BREAK TIMER LOGIC ---
-  useEffect(() => {
-    let interval = null;
-    if (isBreakActive && breakTimer > 0) {
-      interval = setInterval(() => {
-        setBreakTimer(prev => prev - 1);
-      }, 1000);
-    } else if (isBreakActive && breakTimer === 0) {
-      endBreak();
-    }
-    return () => clearInterval(interval);
-  }, [isBreakActive, breakTimer]);
-
+ useEffect(() => {
+  let interval = null;
+  if (isBreakActive && breakTimer > 0) {
+    interval = setInterval(() => {
+      setBreakTimer(prev => prev - 1);
+    }, 1000);
+  } else if (isBreakActive && breakTimer === 0) {
+    endBreak();
+  }
+  return () => clearInterval(interval);
+}, [isBreakActive, breakTimer, endBreak]); // ← Added endBreak
   // --- HELPERS ---
   const formatTime = (seconds) => {
     const m = Math.floor(seconds / 60);
