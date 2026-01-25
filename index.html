@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UGBS 201 Microeconomics Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #0f172a; /* Slate 900 */
+        }
+
+        /* Deep Orange Accent */
+        .accent-bg { background-color: #ea580c; } /* Orange 600 */
+        .accent-text { color: #ea580c; }
+        .accent-border { border-color: #ea580c; }
+        .hover-accent-bg:hover { background-color: #c2410c; } /* Orange 700 */
+
+        /* Smooth Transitions */
+        .card-enter {
+            animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUpFade {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(4px);
+            background-color: #fff7ed; /* Orange 50 */
+            border-color: #ea580c;
+        }
+
+        /* Circular Progress Animation */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Toast Animation */
+        .toast-enter {
+            animation: toastSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes toastSlide {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Modal Backdrop */
+        .backdrop-blur {
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- Minimal Header -->
+    <header class="fixed top-0 w-full bg-white/90 backdrop-blur border-b border-slate-200 z-40">
+        <div class="max-w-3xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex flex-col leading-tight">
+                <span class="text-xs font-bold tracking-widest text-slate-400 uppercase">University of Ghana</span>
+                <span class="text-lg font-bold accent-text">UGBS 201 Microeconomics</span>
+            </div>
+            
+            <!-- Mini Progress Pie (Top Right) -->
+            <div id="mini-progress-container" class="hidden flex items-center gap-3">
+                <div class="text-right">
+                    <div class="text-xs text-slate-400 font-medium">Score</div>
+                    <div class="font-bold text-slate-800"><span id="live-score">0</span></div>
+                </div>
+                <div class="relative w-8 h-8">
+                    <svg class="w-full h-full" viewBox="0 0 100 100">
+                        <circle class="text-slate-200 stroke-current" stroke-width="10" cx="50" cy="50" r="40" fill="transparent"></circle>
+                        <circle id="mini-progress-circle" class="accent-text stroke-current progress-ring__circle" stroke-width="10" stroke-linecap="round" cx="50" cy="50" r="40" fill="transparent" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex flex-col items-center justify-center p-6 pt-24 w-full max-w-3xl mx-auto z-10">
+
+        <!-- Motivational Toast (Fixed Position) -->
+        <div id="motivation-toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl z-50 hidden flex items-center gap-3">
+            <span class="text-xl">💡</span>
+            <span id="motivation-text" class="font-medium text-sm">Keep going!</span>
+        </div>
+
+        <!-- 1. Start Screen -->
+        <div id="start-screen" class="w-full card-enter text-center">
+            <div class="mb-10">
+                <div class="w-24 h-24 accent-bg rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-orange-900/20">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                </div>
+                <h1 class="text-4xl font-bold text-slate-900 mb-3 tracking-tight">Economics Mastery</h1>
+                <p class="text-slate-500 text-lg">Comprehensive Quiz on Microeconomic Principles</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                    <div class="accent-text font-bold text-xl mb-1">60</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wide">Questions</div>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                    <div class="accent-text font-bold text-xl mb-1">Detailed</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wide">Explanations</div>
+                </div>
+                <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                    <div class="accent-text font-bold text-xl mb-1">Review</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wide">Learn from Mistakes</div>
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full md:w-auto px-12 py-4 accent-bg hover-accent-bg text-white font-semibold rounded-lg shadow-lg shadow-orange-900/20 transition-all transform hover:-translate-y-1">
+                Start Assessment
+            </button>
+        </div>
+
+        <!-- 2. Quiz Interface -->
+        <div id="quiz-screen" class="hidden w-full">
+            <!-- Question Header -->
+            <div class="mb-8 flex justify-between items-end border-b border-slate-200 pb-4">
+                <div>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Question</span>
+                    <span class="text-3xl font-bold text-slate-800"><span id="current-q-num">1</span><span class="text-lg text-slate-400 font-normal">/60</span></span>
+                </div>
+                <div id="topic-badge" class="px-3 py-1 bg-orange-50 accent-text text-xs font-bold uppercase tracking-wide rounded-md">
+                    Intro
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-card" class="card-enter">
+                <h2 id="question-text" class="text-2xl font-medium text-slate-800 mb-8 leading-snug">
+                    Loading question...
+                </h2>
+
+                <!-- Options -->
+                <div id="options-container" class="space-y-3 mb-8">
+                    <!-- Buttons injected here -->
+                </div>
+
+                <!-- Feedback Section (Slides down) -->
+                <div id="feedback-area" class="hidden bg-slate-50 rounded-lg p-6 border-l-4 border-slate-200">
+                    <div class="flex items-start gap-4">
+                        <div id="feedback-icon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-1">
+                            <!-- Icon -->
+                        </div>
+                        <div class="flex-grow">
+                            <h3 id="feedback-title" class="font-bold text-lg mb-1">Correct</h3>
+                            <p id="feedback-explanation" class="text-slate-600 text-sm leading-relaxed">Explanation text...</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <button onclick="nextQuestion()" class="accent-bg text-white px-6 py-2 rounded-md font-medium text-sm hover-accent-bg transition shadow-md">
+                            Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Results Screen -->
+        <div id="result-screen" class="hidden w-full text-center card-enter">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">Quiz Complete</h2>
+            <p class="text-slate-500 mb-10">Here is your performance summary</p>
+
+            <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 mb-10">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-10">
+                    <!-- Final Score Chart -->
+                    <div class="relative w-48 h-48">
+                        <svg class="w-full h-full transform -rotate-90">
+                            <circle class="text-slate-100" stroke-width="12" stroke="currentColor" fill="transparent" r="70" cx="96" cy="96" />
+                            <circle id="final-score-circle" class="accent-text" stroke-width="12" stroke-dasharray="439.8" stroke-dashoffset="439.8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="70" cx="96" cy="96" />
+                        </svg>
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                            <span id="final-percentage" class="text-4xl font-bold text-slate-900 block">0%</span>
+                            <span class="text-xs text-slate-400 font-bold uppercase tracking-wide">Score</span>
+                        </div>
+                    </div>
+
+                    <div class="text-left space-y-4 w-full md:w-auto">
+                        <div class="flex items-center justify-between gap-8 border-b border-slate-50 pb-2">
+                            <span class="text-sm text-slate-500">Correct Answers</span>
+                            <span id="final-correct" class="font-bold text-green-600 text-xl">0</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-8 border-b border-slate-50 pb-2">
+                            <span class="text-sm text-slate-500">Wrong Answers</span>
+                            <span id="final-wrong" class="font-bold text-red-500 text-xl">0</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-8">
+                            <span class="text-sm text-slate-500">Total Questions</span>
+                            <span id="final-total" class="font-bold text-slate-900 text-xl">60</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Section Toggle -->
+            <div id="review-container" class="hidden text-left mb-10">
+                <h3 class="font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Review Incorrect Answers</h3>
+                <div id="review-list" class="space-y-4">
+                    <!-- Wrong answers injected here -->
+                </div>
+            </div>
+
+            <div class="flex gap-4 justify-center">
+                <button onclick="toggleReview()" id="review-btn" class="hidden px-8 py-3 bg-white border border-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-50 hover:border-slate-300 transition">
+                    Review Mistakes
+                </button>
+                <button onclick="location.reload()" class="px-8 py-3 accent-bg text-white font-medium rounded-lg hover-accent-bg transition shadow-lg shadow-orange-900/20">
+                    Retake Quiz
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Milestone Modal (Every 10 questions) -->
+    <div id="milestone-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="milestone-content">
+            <div class="text-center">
+                <h3 class="text-xl font-bold text-slate-800 mb-2">Progress Update</h3>
+                <p class="text-slate-500 text-sm mb-6">You've completed <span id="milestone-count">0</span> questions.</p>
+                
+                <div class="relative w-32 h-32 mx-auto mb-6">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle class="text-slate-100" stroke-width="8" stroke="currentColor" fill="transparent" r="58" cx="64" cy="64" />
+                        <circle id="milestone-circle" class="accent-text transition-all duration-1000 ease-out" stroke-width="8" stroke-dasharray="364" stroke-dashoffset="364" stroke-linecap="round" stroke="currentColor" fill="transparent" r="58" cx="64" cy="64" />
+                    </svg>
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <span id="milestone-percent" class="text-2xl font-bold text-slate-800">0%</span>
+                    </div>
+                </div>
+
+                <p id="milestone-msg" class="text-sm font-medium accent-text mb-6">Keep pushing forward!</p>
+
+                <button onclick="closeMilestone()" class="w-full py-3 accent-bg text-white rounded-lg font-medium hover-accent-bg transition">
+                    Continue Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Questions Data ---
+        // Sourced from UGBS 201 Slides
+        const questions = [
+            // Intro & Scarcity
+            {
+                q: "What is the fundamental problem in economics?",
+                options: ["Money", "Scarcity", "Poverty", "Unemployment"],
+                answer: 1,
+                topic: "Introduction",
+                explanation: "All economic questions arise because scarcity exists; our wants are unlimited but resources are scarce."
+            },
+            {
+                q: "Microeconomics involves the study of choices made by:",
+                options: ["The global economy", "Individuals and businesses", "Governments only", "The aggregate national economy"],
+                answer: 1,
+                topic: "Introduction",
+                explanation: "Microeconomics studies choices made by individuals and businesses and how they interact in markets."
+            },
+            {
+                q: "Opportunity cost is best defined as:",
+                options: ["The money paid for a good", "The highest-valued alternative forgone", "The lowest-valued option", "The time spent consuming a good"],
+                answer: 1,
+                topic: "Introduction",
+                explanation: "Opportunity cost is the best thing you must give up to get something else (the next best alternative)."
+            },
+            {
+                q: "Statements that describe 'what ought to be' are called:",
+                options: ["Positive statements", "Normative statements", "Factual statements", "Scientific statements"],
+                answer: 1,
+                topic: "Introduction",
+                explanation: "Normative statements are subjective and about what ought to be, whereas positive statements are about what is."
+            },
+            {
+                q: "A rational choice is one where:",
+                options: ["Marginal cost > Marginal benefit", "Marginal benefit >= Marginal cost", "Costs are zero", "Benefits are maximized regardless of cost"],
+                answer: 1,
+                topic: "Rationality",
+                explanation: "A rational choice uses available resources to best achieve an objective, usually where Marginal Benefit ≥ Marginal Cost."
+            },
+            // PPF
+            {
+                q: "The Production Possibilities Frontier (PPF) shows:",
+                options: ["Maximum profit combinations", "Maximum combinations of goods that can be produced", "Consumer preferences", "Market equilibrium prices"],
+                answer: 1,
+                topic: "PPF",
+                explanation: "The PPF shows the limit of production: the max combinations of goods producible with available factors and technology."
+            },
+            {
+                q: "A point inside the PPF represents:",
+                options: ["Efficient production", "Unattainable production", "Inefficient production", "Increasing opportunity cost"],
+                answer: 2,
+                topic: "PPF",
+                explanation: "Points inside the PPF are attainable but inefficient because more could be produced without forgoing other goods."
+            },
+            {
+                q: "A point outside the PPF is:",
+                options: ["Efficient", "Attainable", "Unattainable", "Equilibrium"],
+                answer: 2,
+                topic: "PPF",
+                explanation: "Points outside the frontier are unattainable given current resources and technology."
+            },
+            {
+                q: "If the PPF is bowed outward (concave), it implies:",
+                options: ["Constant opportunity cost", "Increasing opportunity cost", "Decreasing opportunity cost", "Zero opportunity cost"],
+                answer: 1,
+                topic: "PPF",
+                explanation: "A concave PPF indicates increasing opportunity costs because resources are not perfectly adaptable to all uses."
+            },
+            {
+                q: "Which of the following would shift the PPF outward?",
+                options: ["A decrease in resources", "High unemployment", "Improvement in technology", "A decrease in demand"],
+                answer: 2,
+                topic: "PPF",
+                explanation: "Technological improvements or an increase in resources expand production possibilities, shifting the PPF outward."
+            },
+            // Demand
+            {
+                q: "The Law of Demand states that, ceteris paribus:",
+                options: ["Price and Quantity Demanded are directly related", "Price and Quantity Demanded are inversely related", "Income determines demand", "Supply creates its own demand"],
+                answer: 1,
+                topic: "Demand",
+                explanation: "The Law of Demand states that as price rises, quantity demanded falls, and vice versa (inverse relationship)."
+            },
+            {
+                q: "A movement along the demand curve is caused by:",
+                options: ["A change in income", "A change in tastes", "A change in the price of the good itself", "A change in population"],
+                answer: 2,
+                topic: "Demand",
+                explanation: "A change in the own price of a good causes a change in 'Quantity Demanded' (movement), not a shift in Demand."
+            },
+            {
+                q: "If income increases and demand for a good decreases, that good is:",
+                options: ["A normal good", "An inferior good", "A luxury good", "A substitute"],
+                answer: 1,
+                topic: "Demand",
+                explanation: "Inferior goods are those for which demand falls when consumer income rises (e.g., instant noodles)."
+            },
+            {
+                q: "If the price of Coffee rises and the demand for Tea increases, these goods are:",
+                options: ["Complements", "Substitutes", "Unrelated", "Inferior"],
+                answer: 1,
+                topic: "Demand",
+                explanation: "Substitutes are used in place of one another. If the price of one goes up, demand for the other increases."
+            },
+            {
+                q: "Which of the following shifts the Demand Curve?",
+                options: ["Change in technology", "Change in input prices", "Change in consumer preferences", "Change in the good's own price"],
+                answer: 2,
+                topic: "Demand",
+                explanation: "Preferences, income, prices of related goods, and population shift the Demand curve. Own price causes movement along it."
+            },
+            // Supply
+            {
+                q: "The Law of Supply states that as price rises:",
+                options: ["Quantity supplied falls", "Quantity supplied rises", "Supply curve shifts left", "Demand curve shifts right"],
+                answer: 1,
+                topic: "Supply",
+                explanation: "There is a direct relationship between price and quantity supplied. Higher prices incentivize producers to supply more."
+            },
+            {
+                q: "If the cost of production increases, the supply curve:",
+                options: ["Shifts right (Increase)", "Shifts left (Decrease)", "Remains unchanged", "Becomes vertical"],
+                answer: 1,
+                topic: "Supply",
+                explanation: "Higher production costs make it less profitable to produce, reducing supply (shifting the curve to the left)."
+            },
+            {
+                q: "An improvement in technology will cause:",
+                options: ["Supply to decrease", "Supply to increase", "Demand to increase", "No change"],
+                answer: 1,
+                topic: "Supply",
+                explanation: "Better technology lowers cost of production, enabling firms to supply more at the same price (shift right)."
+            },
+            {
+                q: "Two goods are complements in production if:",
+                options: ["They are consumed together", "They are produced together", "They compete for resources", "One replaces the other"],
+                answer: 1,
+                topic: "Supply",
+                explanation: "Complements in production (e.g., beef and leather) are produced together. If price of one rises, supply of both increases."
+            },
+            {
+                q: "Market Equilibrium occurs where:",
+                options: ["Demand is maximized", "Supply is maximized", "Quantity demanded equals Quantity supplied", "Prices are lowest"],
+                answer: 2,
+                topic: "Equilibrium",
+                explanation: "Equilibrium is the price point where the buying plans of consumers match the selling plans of producers."
+            },
+            // Equilibrium & Price Controls
+            {
+                q: "If the market price is above the equilibrium price:",
+                options: ["There is a shortage", "There is a surplus", "Demand increases", "Supply decreases"],
+                answer: 1,
+                topic: "Equilibrium",
+                explanation: "At a price higher than equilibrium, Quantity Supplied > Quantity Demanded, creating a Surplus."
+            },
+            {
+                q: "A price floor set above equilibrium leads to:",
+                options: ["Shortage", "Surplus", "Equilibrium", "Increased Demand"],
+                answer: 1,
+                topic: "Price Controls",
+                explanation: "A price floor (minimum price) prevents price from falling to equilibrium, causing Qs > Qd (Surplus)."
+            },
+            {
+                q: "A price ceiling set below equilibrium leads to:",
+                options: ["Shortage", "Surplus", "Excess Supply", "Decreased Demand"],
+                answer: 0,
+                topic: "Price Controls",
+                explanation: "A price ceiling (maximum price) causes Qd > Qs, resulting in a Shortage (excess demand)."
+            },
+            {
+                q: "If Demand increases and Supply remains constant, equilibrium price will:",
+                options: ["Fall", "Rise", "Stay the same", "Be indeterminate"],
+                answer: 1,
+                topic: "Equilibrium",
+                explanation: "Higher demand creates a shortage at the old price, pushing the price up."
+            },
+            {
+                q: "If both Demand and Supply increase, equilibrium quantity:",
+                options: ["Decreases", "Increases", "Stays the same", "Is indeterminate"],
+                answer: 1,
+                topic: "Equilibrium",
+                explanation: "Both shifts push quantity up. However, the effect on Price is indeterminate without knowing the magnitude of shifts."
+            },
+            // Elasticity
+            {
+                q: "Price Elasticity of Demand (PED) measures:",
+                options: ["Responsiveness of price to quantity", "Responsiveness of quantity demanded to price", "Slope of supply curve", "Change in income"],
+                answer: 1,
+                topic: "Elasticity",
+                explanation: "PED measures the degree of responsiveness of quantity demanded to changes in the price of the good."
+            },
+            {
+                q: "If PED > 1, demand is:",
+                options: ["Inelastic", "Unit Elastic", "Elastic", "Perfectly Elastic"],
+                answer: 2,
+                topic: "Elasticity",
+                explanation: "Elastic demand means the percentage change in quantity is greater than the percentage change in price."
+            },
+            {
+                q: "If a good has many close substitutes, its demand is likely:",
+                options: ["Inelastic", "Elastic", "Unit Elastic", "Perfectly Inelastic"],
+                answer: 1,
+                topic: "Elasticity",
+                explanation: "The availability of substitutes makes it easy for consumers to switch, making demand elastic."
+            },
+            {
+                q: "Cross Price Elasticity of Demand is positive for:",
+                options: ["Complements", "Substitutes", "Inferior Goods", "Normal Goods"],
+                answer: 1,
+                topic: "Elasticity",
+                explanation: "For substitutes, an increase in the price of Good A leads to an increase in demand for Good B (+ve relationship)."
+            },
+            {
+                q: "Income Elasticity of Demand for a Necessity is:",
+                options: ["Negative", "Greater than 1", "Between 0 and 1", "Zero"],
+                answer: 2,
+                topic: "Elasticity",
+                explanation: "Necessities are normal goods (positive elasticity) but income inelastic (< 1), as demand doesn't rise fast with income."
+            },
+            // Consumer Behaviour
+            {
+                q: "Utility is best defined as:",
+                options: ["Usefulness", "Price", "Satisfaction derived from consumption", "Profit"],
+                answer: 2,
+                topic: "Consumer Behaviour",
+                explanation: "In economics, utility refers to the satisfaction or pleasure a consumer derives from consuming a commodity."
+            },
+            {
+                q: "Marginal Utility refers to:",
+                options: ["Total satisfaction", "Extra satisfaction from an additional unit", "Average satisfaction", "Cost of the last unit"],
+                answer: 1,
+                topic: "Consumer Behaviour",
+                explanation: "Marginal Utility (MU) is the change in total utility resulting from a one-unit increase in consumption."
+            },
+            {
+                q: "The Law of Diminishing Marginal Utility states that as consumption increases:",
+                options: ["Total utility falls", "Marginal utility increases", "Marginal utility decreases", "Total utility is constant"],
+                answer: 2,
+                topic: "Consumer Behaviour",
+                explanation: "As you consume more of a good, the extra satisfaction (MU) from each additional unit declines."
+            },
+            {
+                q: "Consumer equilibrium condition for a single good is:",
+                options: ["MU > P", "MU < P", "MU = P", "TU = P"],
+                answer: 2,
+                topic: "Consumer Behaviour",
+                explanation: "A consumer maximizes utility when the Marginal Utility of the good equals its Price (MUx = Px)."
+            },
+            {
+                q: "An Indifference Curve shows combinations of goods that yield:",
+                options: ["Different levels of utility", "The same level of satisfaction", "Maximum profit", "The same cost"],
+                answer: 1,
+                topic: "Consumer Behaviour",
+                explanation: "An indifference curve represents all bundles of goods that provide the consumer with the same level of utility."
+            },
+            {
+                q: "The slope of the Budget Line represents:",
+                options: ["Marginal Rate of Substitution", "Relative prices of the two goods", "Total Income", "Total Utility"],
+                answer: 1,
+                topic: "Consumer Behaviour",
+                explanation: "The slope of the budget line is -(Px/Py), representing the relative price ratio or opportunity cost."
+            },
+            {
+                q: "Consumer Optimum is found where:",
+                options: ["Indifference curve intersects budget line", "Indifference curve is tangent to budget line", "MU is maximized", "Spending is minimized"],
+                answer: 1,
+                topic: "Consumer Behaviour",
+                explanation: "Optimum is the tangency point where the slope of the Indifference Curve (MRS) equals the slope of the Budget Line (Price Ratio)."
+            },
+            {
+                q: "If income rises, the budget line:",
+                options: ["Rotates outward", "Rotates inward", "Shifts outward parallel", "Shifts inward parallel"],
+                answer: 2,
+                topic: "Consumer Behaviour",
+                explanation: "An increase in income allows the consumer to buy more of both goods, shifting the budget line outward parallel."
+            },
+            {
+                q: "Indifference curves are convex to the origin due to:",
+                options: ["Increasing Marginal Rate of Substitution", "Diminishing Marginal Rate of Substitution", "Constant prices", "Rising income"],
+                answer: 1,
+                topic: "Consumer Behaviour",
+                explanation: "Convexity implies that consumers are willing to give up less of Y to get more X as they acquire more X (Diminishing MRS)."
+            },
+            // Production
+            {
+                q: "The Short Run is a period where:",
+                options: ["All inputs are variable", "At least one input is fixed", "No production occurs", "Profits are zero"],
+                answer: 1,
+                topic: "Production",
+                explanation: "In production theory, the short run is defined by the existence of at least one fixed factor (e.g., capital/plant size)."
+            },
+            {
+                q: "Marginal Product (MP) is:",
+                options: ["Total output / Labor", "Change in Output / Change in Input", "Total Output x Price", "Average Output"],
+                answer: 1,
+                topic: "Production",
+                explanation: "MP is the additional output produced by adding one more unit of a variable input."
+            },
+            {
+                q: "The Law of Diminishing Marginal Returns occurs in:",
+                options: ["The Long Run only", "The Short Run only", "Both Short and Long Run", "Neither"],
+                answer: 1,
+                topic: "Production",
+                explanation: "It is a short-run phenomenon occurring when variable inputs are added to a fixed input, eventually causing MP to fall."
+            },
+            {
+                q: "When Marginal Product is greater than Average Product:",
+                options: ["Average Product is falling", "Average Product is rising", "Average Product is constant", "Total Product is falling"],
+                answer: 1,
+                topic: "Production",
+                explanation: "If the extra unit (MP) contributes more than the average, it pulls the average up."
+            },
+            {
+                q: "Returns to Scale refers to:",
+                options: ["Short run changes", "Changes in all inputs in the Long Run", "Diminishing returns", "Variable costs"],
+                answer: 1,
+                topic: "Production",
+                explanation: "Returns to Scale describes how output changes when ALL inputs are varied proportionally (Long Run)."
+            },
+            // Costs
+            {
+                q: "Explicit costs are:",
+                options: ["Opportunity costs", "Out-of-pocket cash payments", "Forgone wages", "Implicit costs"],
+                answer: 1,
+                topic: "Costs",
+                explanation: "Explicit costs are direct, monetary payments made for factors of production."
+            },
+            {
+                q: "Total Cost (TC) equals:",
+                options: ["TFC + TVC", "AFC + AVC", "MC x Q", "Price x Quantity"],
+                answer: 0,
+                topic: "Costs",
+                explanation: "Total Cost is the sum of Total Fixed Costs and Total Variable Costs."
+            },
+            {
+                q: "Which cost curve is U-shaped?",
+                options: ["TFC", "AFC", "ATC", "TVC"],
+                answer: 2,
+                topic: "Costs",
+                explanation: "The ATC curve is U-shaped due to spreading fixed costs initially and then diminishing returns setting in."
+            },
+            {
+                q: "The Marginal Cost (MC) curve intersects the ATC curve at:",
+                options: ["Its maximum point", "Its minimum point", "Where AFC is zero", "The origin"],
+                answer: 1,
+                topic: "Costs",
+                explanation: "Mathematically, when MC < ATC, ATC falls. When MC > ATC, ATC rises. Thus, they meet at ATC's minimum."
+            },
+            {
+                q: "In the long run, all costs are:",
+                options: ["Fixed", "Variable", "Sunk", "Zero"],
+                answer: 1,
+                topic: "Costs",
+                explanation: "In the long run, firms can adjust all factors of production, so there are no fixed costs."
+            },
+            // Market Structures
+            {
+                q: "A Perfect Competition market is characterized by:",
+                options: ["Single seller", "Product differentiation", "Many buyers and sellers, identical products", "High barriers to entry"],
+                answer: 2,
+                topic: "Market Structures",
+                explanation: "Perfect competition involves many firms selling homogenous (identical) products with no barriers to entry."
+            },
+            {
+                q: "A perfectly competitive firm is a:",
+                options: ["Price Maker", "Price Taker", "Monopolist", "Oligopolist"],
+                answer: 1,
+                topic: "Market Structures",
+                explanation: "Since the firm is small relative to the market, it must accept the market equilibrium price (Price Taker)."
+            },
+            {
+                q: "The demand curve for a perfectly competitive firm is:",
+                options: ["Downward sloping", "Vertical", "Horizontal (Perfectly Elastic)", "Upward sloping"],
+                answer: 2,
+                topic: "Market Structures",
+                explanation: "It can sell any quantity at the market price, making demand perfectly elastic (horizontal)."
+            },
+            {
+                q: "Profit maximization rule for all firms is:",
+                options: ["MR = MC", "P = ATC", "TR = TC", "MR > MC"],
+                answer: 0,
+                topic: "Market Structures",
+                explanation: "Profits are maximized at the quantity where Marginal Revenue equals Marginal Cost."
+            },
+            {
+                q: "A firm should shut down in the short run if:",
+                options: ["Price < ATC", "Price < AVC", "Price = MC", "TR < TC"],
+                answer: 1,
+                topic: "Market Structures",
+                explanation: "If price cannot even cover variable costs (P < AVC), the firm loses more by producing than by shutting down."
+            },
+            {
+                q: "A Monopoly is characterized by:",
+                options: ["Many substitutes", "Single seller, unique product", "Free entry", "Price taking"],
+                answer: 1,
+                topic: "Market Structures",
+                explanation: "Monopolies exist when there is only one supplier of a good with no close substitutes and high barriers to entry."
+            },
+            {
+                q: "For a Monopolist, Marginal Revenue is:",
+                options: ["Equal to Price", "Greater than Price", "Less than Price", "Zero"],
+                answer: 2,
+                topic: "Market Structures",
+                explanation: "Since a monopolist faces a downward-sloping demand curve, it must lower price to sell more, making MR < Price."
+            },
+            {
+                q: "Monopolistic Competition differs from Perfect Competition due to:",
+                options: ["Barriers to entry", "Product Differentiation", "Single seller", "Homogenous products"],
+                answer: 1,
+                topic: "Market Structures",
+                explanation: "In Monopolistic Competition, products are differentiated (brand, quality), giving firms some price-setting power."
+            },
+            {
+                q: "In the long run, firms in Monopolistic Competition earn:",
+                options: ["Economic Profit", "Zero Economic Profit (Normal Profit)", "Losses", "Monopoly Profit"],
+                answer: 1,
+                topic: "Market Structures",
+                explanation: "Free entry and exit drive profits down to normal (zero economic profit) in the long run, similar to perfect competition."
+            },
+            {
+                q: "Deadweight loss in a monopoly represents:",
+                options: ["Loss of consumer surplus only", "Loss of producer surplus only", "Inefficiency (loss of total surplus)", "Excess profit"],
+                answer: 2,
+                topic: "Market Structures",
+                explanation: "Monopolies produce less than the socially optimal quantity, creating a deadweight loss (reduction in total welfare)."
+            }
+        ];
+
+        // --- Motivational Messages ---
+        const encouragements = [
+            "Great job! Keep going! 🚀",
+            "You're doing fantastic! 🌟",
+            "Economics wizard! 📈",
+            "Mastering the market! 💹",
+            "Excellent progress! 💼",
+            "Keep that momentum up! 🔥",
+            "You're crushing it! 💪",
+            "Rational choice! 🎓",
+            "Sharp analytical mind! 🧠"
+        ];
+
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let wrongAnswers = [];
+        const totalQuestions = questions.length;
+
+        // --- DOM Elements ---
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackExplanation = document.getElementById('feedback-explanation');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const topicBadge = document.getElementById('topic-badge');
+        const currentQNum = document.getElementById('current-q-num');
+        const liveScore = document.getElementById('live-score');
+        const miniProgressContainer = document.getElementById('mini-progress-container');
+        const miniProgressCircle = document.getElementById('mini-progress-circle');
+
+        // Milestone Elements
+        const milestoneModal = document.getElementById('milestone-modal');
+        const milestoneContent = document.getElementById('milestone-content');
+        const milestoneCount = document.getElementById('milestone-count');
+        const milestonePercent = document.getElementById('milestone-percent');
+        const milestoneCircle = document.getElementById('milestone-circle');
+
+        // Toast Element
+        const motivationToast = document.getElementById('motivation-toast');
+        const motivationText = document.getElementById('motivation-text');
+
+        // --- Functions ---
+
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            miniProgressContainer.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const currentQ = questions[currentQuestionIndex];
+            
+            // Reset UI
+            feedbackArea.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+            
+            // Text Content
+            questionText.textContent = currentQ.q;
+            currentQNum.textContent = currentQuestionIndex + 1;
+            topicBadge.textContent = currentQ.topic;
+            
+            // Update Mini Progress Ring
+            const progressPercent = ((currentQuestionIndex) / totalQuestions) * 100;
+            // Radius 40 => Circumference ~251.2
+            const offset = 251.2 - (251.2 * progressPercent / 100);
+            miniProgressCircle.style.strokeDashoffset = offset;
+
+            // Generate Options
+            currentQ.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = `option-btn w-full text-left p-5 rounded-xl border-2 border-slate-200 bg-white text-slate-700 font-medium text-lg`;
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            const currentQ = questions[currentQuestionIndex];
+            const buttons = optionsContainer.getElementsByTagName('button');
+            
+            // Disable all buttons
+            for(let btn of buttons) {
+                btn.disabled = true;
+                btn.classList.add('opacity-60', 'cursor-not-allowed');
+            }
+
+            const isCorrect = selectedIndex === currentQ.answer;
+
+            // Style Feedback Area
+            feedbackArea.classList.remove('hidden', 'border-red-200', 'border-green-200');
+            feedbackIcon.classList.remove('bg-red-100', 'text-red-600', 'bg-green-100', 'text-green-600');
+            feedbackTitle.classList.remove('text-red-700', 'text-green-700');
+
+            if (isCorrect) {
+                // Button Styling
+                btnElement.classList.remove('border-slate-200', 'bg-white', 'opacity-60');
+                btnElement.classList.add('border-green-500', 'bg-green-50', 'text-green-900', 'font-bold');
+                
+                // Feedback Styling
+                feedbackArea.classList.add('border-green-200');
+                feedbackIcon.classList.add('bg-green-100', 'text-green-600');
+                feedbackIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`;
+                feedbackTitle.textContent = "Correct Answer";
+                feedbackTitle.classList.add('text-green-700');
+                
+                score++;
+                liveScore.textContent = score;
+            } else {
+                // User's Wrong Button
+                btnElement.classList.remove('border-slate-200', 'bg-white', 'opacity-60');
+                btnElement.classList.add('border-red-500', 'bg-red-50', 'text-red-900');
+                
+                // Correct Button Highlight
+                const correctBtn = buttons[currentQ.answer];
+                correctBtn.classList.remove('border-slate-200', 'bg-white', 'opacity-60');
+                correctBtn.classList.add('border-green-500', 'bg-green-50', 'text-green-900', 'font-bold');
+
+                // Feedback Styling
+                feedbackArea.classList.add('border-red-200');
+                feedbackIcon.classList.add('bg-red-100', 'text-red-600');
+                feedbackIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                feedbackTitle.textContent = "Incorrect Answer";
+                feedbackTitle.classList.add('text-red-700');
+
+                // Track Wrong Answer
+                wrongAnswers.push({
+                    q: currentQ.q,
+                    userAns: currentQ.options[selectedIndex],
+                    correctAns: currentQ.options[currentQ.answer],
+                    explanation: currentQ.explanation
+                });
+            }
+
+            feedbackExplanation.textContent = currentQ.explanation;
+            
+            // Slide down animation
+            feedbackArea.classList.add('card-enter');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            // Check for Milestone (Every 10 questions)
+            if (currentQuestionIndex > 0 && currentQuestionIndex % 10 === 0 && currentQuestionIndex < totalQuestions) {
+                showMilestone();
+                return;
+            }
+
+            // Check for Motivation (Every 3 questions)
+            if (currentQuestionIndex > 0 && currentQuestionIndex % 3 === 0) {
+                showMotivation();
+            }
+
+            if (currentQuestionIndex < totalQuestions) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showMotivation() {
+            const msg = encouragements[Math.floor(Math.random() * encouragements.length)];
+            motivationText.textContent = msg;
+            motivationToast.classList.remove('hidden');
+            motivationToast.classList.add('toast-enter');
+            
+            setTimeout(() => {
+                motivationToast.classList.add('hidden');
+            }, 3000);
+        }
+
+        function showMilestone() {
+            quizScreen.classList.add('blur-sm');
+            milestoneModal.classList.remove('hidden');
+            // Trigger Fade In
+            setTimeout(() => {
+                milestoneModal.classList.remove('opacity-0');
+                document.getElementById('milestone-content').classList.remove('scale-95');
+                document.getElementById('milestone-content').classList.add('scale-100');
+            }, 10);
+
+            // Update Data
+            const percent = Math.round((score / currentQuestionIndex) * 100);
+            milestoneCount.textContent = currentQuestionIndex;
+            milestonePercent.textContent = `${percent}%`;
+
+            // Animate Circle
+            // Radius 58 => Circumference ~364
+            const offset = 364 - (364 * percent / 100);
+            setTimeout(() => {
+                milestoneCircle.style.strokeDashoffset = offset;
+            }, 300);
+        }
+
+        function closeMilestone() {
+            milestoneModal.classList.add('opacity-0');
+            setTimeout(() => {
+                milestoneModal.classList.add('hidden');
+                quizScreen.classList.remove('blur-sm');
+                loadQuestion();
+            }, 300);
+        }
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            miniProgressContainer.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Animate Final Score Circle
+            // Radius 70 => Circumference ~439.8
+            const circle = document.getElementById('final-score-circle');
+            const offset = 439.8 - (439.8 * percentage / 100);
+            
+            setTimeout(() => {
+                circle.style.transition = 'stroke-dashoffset 1.5s ease-out';
+                circle.style.strokeDashoffset = offset;
+            }, 500);
+
+            document.getElementById('final-percentage').textContent = `${percentage}%`;
+            document.getElementById('final-correct').textContent = score;
+            document.getElementById('final-wrong').textContent = wrongAnswers.length;
+            document.getElementById('final-total').textContent = `${score} pts`;
+
+            // Populate Review Section if there are errors
+            const reviewBtn = document.getElementById('review-btn');
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            if (wrongAnswers.length > 0) {
+                reviewBtn.classList.remove('hidden');
+                wrongAnswers.forEach((item, i) => {
+                    const div = document.createElement('div');
+                    div.className = "bg-slate-50 p-4 rounded-lg border border-slate-200";
+                    div.innerHTML = `
+                        <p class="font-bold text-slate-800 text-sm mb-2">${i+1}. ${item.q}</p>
+                        <div class="flex flex-col gap-2 text-sm">
+                            <div class="flex items-center gap-2 text-red-600 bg-red-50 p-2 rounded">
+                                <span class="font-bold">✘ You:</span> ${item.userAns}
+                            </div>
+                            <div class="flex items-center gap-2 text-green-700 bg-green-50 p-2 rounded">
+                                <span class="font-bold">✔ Correct:</span> ${item.correctAns}
+                            </div>
+                            <div class="text-slate-500 italic mt-1 pl-2 border-l-2 border-orange-200">
+                                💡 ${item.explanation}
+                            </div>
+                        </div>
+                    `;
+                    reviewList.appendChild(div);
+                });
+            }
+        }
+
+        function toggleReview() {
+            const container = document.getElementById('review-container');
+            container.classList.toggle('hidden');
+            // smooth scroll to review
+            if(!container.classList.contains('hidden')) {
+                container.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+    </script>
+</body>
+</html>
